@@ -5,7 +5,20 @@ const { validatePokemon } = require("../middleware/validatePokemon");
 
 router.get("/", async (req, res) => {
   const listOfPokemons = await Pokemons.findAll();
-  res.json(listOfPokemons);
+
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+
+  const items = listOfPokemons.slice(startIndex, endIndex);
+
+  res.json({
+    items,
+    currentPage: page,
+    totalPages: Math.ceil(listOfPokemons.length / limit),
+  });
 });
 
 router.get("/:id", async (req, res) => {
