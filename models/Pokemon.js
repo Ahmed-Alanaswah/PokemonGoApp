@@ -1,23 +1,29 @@
 module.exports = (sequelize, DataTypes) => {
-  const Pokemons = sequelize.define("Pokemons", {
-    name: DataTypes.STRING,
+  const Pokemons = sequelize.define(
+    "Pokemons",
+    {
+      name: DataTypes.STRING,
 
-    gokdexNumer: DataTypes.STRING,
+      pokdexNumer: DataTypes.STRING,
 
-    generation: DataTypes.STRING,
+      generation: DataTypes.STRING,
 
-    evolutionStage: DataTypes.STRING,
+      evolutionStage: DataTypes.STRING,
 
-    evolved: DataTypes.STRING,
+      evolved: DataTypes.STRING,
 
-    familyID: DataTypes.STRING,
+      familyID: DataTypes.STRING,
 
-    type: DataTypes.STRING,
+      type: DataTypes.STRING,
 
-    weather: DataTypes.STRING,
+      weather: DataTypes.STRING,
 
-    statTotal: DataTypes.STRING,
-  });
+      statTotal: DataTypes.STRING,
+    },
+    {
+      timestamps: false,
+    }
+  );
 
   return Pokemons;
 };
