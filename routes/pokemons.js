@@ -41,6 +41,33 @@ router.get("/filter", async (req, res) => {
   res.json({ filteredData });
 });
 
+function searchFunction(data, query) {
+  if (!query) {
+    return data;
+  }
+
+  const lowerCaseQuery = query.toLowerCase();
+
+  return data.filter((item) => {
+    return (
+      item.name?.toLowerCase().includes(lowerCaseQuery) ||
+      item.weather?.toLowerCase().includes(lowerCaseQuery) ||
+      item.type?.toLowerCase().includes(lowerCaseQuery) ||
+      item.evolutionStage?.toLowerCase().includes(lowerCaseQuery)
+    );
+  });
+}
+
+router.get("/search", async (req, res) => {
+  const listOfPokemons = await Pokemons.findAll();
+
+  const query = req.query.querySearch;
+
+  const results = searchFunction(listOfPokemons, query);
+
+  res.json({ results });
+});
+
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   const Pokemon = await Pokemons.findByPk(id);
