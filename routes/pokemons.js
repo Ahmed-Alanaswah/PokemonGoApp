@@ -21,6 +21,26 @@ router.get("/", async (req, res) => {
   });
 });
 
+router.get("/filter", async (req, res) => {
+  const listOfPokemons = await Pokemons.findAll();
+
+  const { type, evolutionStage } = req.query;
+
+  let filteredData = listOfPokemons;
+
+  if (type) {
+    filteredData = filteredData.filter((item) => item.type === type);
+  }
+
+  if (evolutionStage) {
+    filteredData = filteredData.filter(
+      (item) => item.evolutionStage === evolutionStage
+    );
+  }
+
+  res.json({ filteredData });
+});
+
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   const Pokemon = await Pokemons.findByPk(id);
