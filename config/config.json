@@ -1,8 +1,9 @@
 {
   "development": {
     "username": "name",
-    "password": 1234,
-    "database": "pokemon",
+    "password": "1234",
+    "port": 5432,
+    "database": "pokemon_db",
     "host": "127.0.0.1",
     "dialect": "postgres"
   }
