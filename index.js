@@ -10,8 +10,6 @@ app.use(cors());
 
 require("./startup/routes")(app);
 
-require("dotenv").config();
-
 const server = db.sequelize.sync().then(() => {
   app.listen(port, () => {
     console.log(`server running on port ${port}`);
