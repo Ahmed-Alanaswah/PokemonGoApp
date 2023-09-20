@@ -1,118 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const { Pokemons } = require("../models");
 const { validatePokemon } = require("../middleware/validatePokemon");
+const {
+  createPokemon,
+  fetchPokemons,
+  filterPkemons,
+  searchPokemons,
+  getOnePokemons,
+  deletePokemon,
+  editPokemons,
+} = require("../controllers/pokemon");
 
-router.get("/", async (req, res) => {
-  const listOfPokemons = await Pokemons.findAll();
+router.get("/", fetchPokemons);
 
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
+router.get("/filter", filterPkemons);
 
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
+router.get("/search", searchPokemons);
 
-  const items = listOfPokemons.slice(startIndex, endIndex);
+router.get("/:id", getOnePokemons);
 
-  res.json({
-    items,
-    currentPage: page,
-    totalPages: Math.ceil(listOfPokemons.length / limit),
-  });
-});
+router.post("/", validatePokemon, createPokemon);
 
-router.get("/filter", async (req, res) => {
-  const listOfPokemons = await Pokemons.findAll();
+router.put("/:id", editPokemons);
 
-  const { type, evolutionStage } = req.query;
-
-  let filteredData = listOfPokemons;
-
-  if (type) {
-    filteredData = filteredData.filter((item) => item.type === type);
-  }
-
-  if (evolutionStage) {
-    filteredData = filteredData.filter(
-      (item) => item.evolutionStage === evolutionStage
-    );
-  }
-
-  res.json({ filteredData });
-});
-
-function searchFunction(data, query) {
-  if (!query) {
-    return data;
-  }
-
-  const lowerCaseQuery = query.toLowerCase();
-
-  return data.filter((item) => {
-    return (
-      item.name?.toLowerCase().includes(lowerCaseQuery) ||
-      item.weather?.toLowerCase().includes(lowerCaseQuery) ||
-      item.type?.toLowerCase().includes(lowerCaseQuery) ||
-      item.evolutionStage?.toLowerCase().includes(lowerCaseQuery)
-    );
-  });
-}
-
-router.get("/search", async (req, res) => {
-  const listOfPokemons = await Pokemons.findAll();
-
-  const query = req.query.querySearch;
-
-  const results = searchFunction(listOfPokemons, query);
-
-  res.json({ results });
-});
-
-router.get("/:id", async (req, res) => {
-  const id = req.params.id;
-  const Pokemon = await Pokemons.findByPk(id);
-  res.json(Pokemon);
-});
-
-router.post("/", validatePokemon, async (req, res) => {
-  try {
-    const Pokemon = req.body;
-    await Pokemons.create(Pokemon);
-    res.json(Pokemon);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-router.put("/:id", async (req, res) => {
-  const pokemonId = req.params.id;
-  const updatedPokemon = req.body;
-
-  try {
-    const pokemon = await Pokemons.findByPk(pokemonId);
-
-    if (!pokemon) {
-      return res.status(404).json({ message: "pokemon not found" });
-    }
-
-    await pokemon.update(updatedPokemon);
-    res.json({ message: "pokemon updated successfully" });
-  } catch (error) {
-    console.error("Error updating pokemon:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
-
-router.delete("/:id", async (req, res) => {
-  try {
-    const pokemonId = req.params.id;
-    await Pokemons.destroy({ where: { id: pokemonId } });
-    res.status(200).json({ message: "Pokemon deleted successfully" });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Internal server error", message: error.message });
-  }
-});
+router.delete("/:id", deletePokemon);
 
 module.exports = router;
