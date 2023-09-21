@@ -12,7 +12,7 @@ jest.mock("../../models");
 
 const request = {
   query: {
-    page: "1", // Include the 'page' query parameter in your test request
+    page: "1",
     type: "one",
     querySearch: "ahmed",
   },
