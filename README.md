@@ -11,7 +11,7 @@
 
 ## code structur
 
-!["alt text"]("file:///C:\Users\Admin\Pictures\Screenshots\Screenshot.png")
+!["alt text"](Screenshot.png)
 
 ## code setup and run
 
